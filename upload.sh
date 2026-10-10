@@ -6,7 +6,7 @@
 # Continuously watches a Git repository and does the following:
 # 1. Compresses each new or modified PDF (smallest first) as soon as it is found, then stages it.
 # 2. Uses the Git index (staging area) as the "already compressed" marker.
-# 3. Pushes when 50 compressed files (or about 1 GB) are staged, or when the maximum wait time has passed.
+# 3. Pushes when 25 compressed files (or about 1 GB) are staged, or when the maximum wait time has passed.
 # 4. Commits BEFORE pulling, so the batch is a real commit rather than fragile staged state.
 # 5. Never stages a PDF that was not compressed by this script.
 # 6. Exits immediately if any command fails (run it under systemd with Restart=on-failure).
@@ -30,7 +30,7 @@ export GIT_SSH_COMMAND="${GIT_SSH_COMMAND:-ssh -o BatchMode=yes -o ConnectTimeou
 
 readonly REPOSITORY_DIRECTORY="${REPOSITORY_DIRECTORY:-$PWD}"                        # Repository to watch (defaults to the current directory)
 readonly CHECK_INTERVAL_SECONDS="${CHECK_INTERVAL_SECONDS:-5}"                       # Seconds to sleep between repository checks
-readonly MAX_BATCH_SIZE="${MAX_BATCH_SIZE:-50}"                                      # Maximum number of files in one commit/push
+readonly MAX_BATCH_SIZE="${MAX_BATCH_SIZE:-25}"                                      # Maximum number of files in one commit/push
 readonly MAX_BATCH_BYTES="${MAX_BATCH_BYTES:-1000000000}"                            # Stop adding PDFs at about 1 GB (GitHub rejects pushes over about 2 GB)
 readonly MAX_SECONDS_BETWEEN_PUSHES="${MAX_SECONDS_BETWEEN_PUSHES:-43200}"           # Force a push after this many seconds (12 hours)
 readonly GITHUB_MAX_FILE_BYTES="${GITHUB_MAX_FILE_BYTES:-104857600}"                 # GitHub rejects files larger than 100 MiB
